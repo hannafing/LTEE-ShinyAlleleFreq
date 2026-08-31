@@ -1,0 +1,341 @@
+---
+title: "remake ggplot m1"
+output: html_notebook
+---
+
+Loading in library to use (like import)
+```{r}
+library(tidyverse) 
+library(zoo)
+```
+
+
+
+
+Read data frame and assign it "df" 
+```{r}
+df_m1 <- read_csv("data_m1.csv")
+```
+
+```{r}
+df_long_m1 <- df_m1 %>%
+  # mutate(): adds new column
+  # paste(): concatenates strings and values into a single element or character vector
+  # This line adds a new column (mutation_id) that has "gene_position_allele" stored
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  # select(): manipulate specific columns 
+  # This line keeps the columns named inside the ()
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  # pivot_longer(): transforms data from wide format to long format (fewer columns)
+  pivot_longer(
+    # Tells which columns to transform
+    cols = starts_with("AF:"),
+    # Column names that did start with "AF:" go into new column, "generation"
+    names_to = "generation",
+    # Strips "AF:" before storing values
+    names_prefix = "AF:",
+    # Numbers (values) in columns "AF:", go to column named "frequency"
+    values_to = "frequency"
+  ) %>%
+  # Changes the number values from a string to number 
+  mutate(generation = as.numeric(generation)) %>%
+  # Drops rows where frequency is blank
+  filter(!is.na(frequency))
+```
+
+```{r}
+df_long_m1 <- df_long_m1 %>% filter(generation <= 60000)
+```
+
+```{r}
+# one color per mutation_id) 
+mutation_ids <- unique(df_long_m1$mutation_id)
+n_mut <- length(mutation_ids)
+
+set.seed(42)  # fixed seed => reproducible colors
+trajectory_colors <- grDevices::hcl(
+  h = sample(seq(0, 360, length.out = n_mut)),  # hues around the wheel, shuffled
+  c = runif(n_mut, 40, 100),                    # vary saturation
+  l = runif(n_mut, 25, 75)                       # vary lightness (dark + light lines)
+)
+names(trajectory_colors) <- mutation_ids
+
+# plot: color by mutation_id, apply the manual palette 
+p_m1 <- ggplot(df_long_m1, aes(x = generation, y = frequency,
+                            group = mutation_id, color = mutation_id)) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
+  scale_color_manual(values = trajectory_colors) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = expression("Generation, " * italic(t)),
+    y = expression("Allele frequency, " * italic(f(t))),
+    title = "Allele frequency trajectories"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(legend.position = "none")
+
+```
+ 
+```{r}
+ print(p_m1)
+```
+
+```{r}
+ ggsave("allele_trajectories.png", plot = p_m1, width = 10, height = 4, dpi = 300)
+```
+ 
+```{r}
+df_display_m1 <- df_m1 %>% 
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+mutate(Generation = as.numeric(Generation)) %>%
+  # Drops rows where frequency is blank
+  filter(!is.na(frequency))
+```
+
+```{r}
+print(df_display_m1)
+```
+
+Plot m2
+```{r}
+df_m2 <- read_csv("data_m2.csv")
+
+
+df_long_m2 <- df_m2 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency))
+
+
+df_long_m2 <- df_long_m2 %>% filter(generation <= 60000)
+
+
+
+mutation_ids <- unique(df_long_m2$mutation_id)
+n_mut <- length(mutation_ids)
+
+set.seed(42)  
+trajectory_colors <- grDevices::hcl(
+  h = sample(seq(0, 360, length.out = n_mut)), 
+  c = runif(n_mut, 40, 100),                 
+  l = runif(n_mut, 25, 75)                      
+)
+names(trajectory_colors) <- mutation_ids
+
+
+p_m2 <- ggplot(df_long_m2, aes(x = generation, y = frequency,
+                            group = mutation_id, color = mutation_id)) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
+  scale_color_manual(values = trajectory_colors) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = expression("Generation, " * italic(t)),
+    y = expression("Allele frequency, " * italic(f(t))),
+    title = "Allele frequency trajectories"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(legend.position = "none")
+
+```
+```{r}
+ print(p_m2)
+```
+
+
+Plot p6
+```{r}
+df_p6 <- read_csv("data_p6.csv")
+
+
+df_long_p6 <- df_p6 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency))
+
+
+df_long_p6 <- df_long_p6 %>% filter(generation <= 60000)
+```
+
+DT p6
+```{r}
+df_display_p6 <- df_p6 %>% 
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency)) %>%
+  filter(Generation <= 60000)
+
+
+```
+
+```{r}
+mutation_ids <- unique(df_long_p6$mutation_id)
+n_mut <- length(mutation_ids)
+
+set.seed(42)  
+trajectory_colors <- grDevices::hcl(
+  h = sample(seq(0, 360, length.out = n_mut)), 
+  c = runif(n_mut, 40, 100),                 
+  l = runif(n_mut, 25, 75)                    
+)
+names(trajectory_colors) <- mutation_ids
+
+
+p_p6 <- ggplot(df_long_p6, aes(x = generation, y = frequency,
+                            group = mutation_id, color = mutation_id)) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
+  scale_color_manual(values = trajectory_colors) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = expression("Generation, " * italic(t)),
+    y = expression("Allele frequency, " * italic(f(t))),
+    title = "Allele frequency trajectories"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(legend.position = "none")
+```
+```{r}
+ print(p_p6)
+```
+
+```{r}
+write.csv(df_long_p6, "test_p6.csv", row.names = FALSE)
+```
+
+
+
+
+
+
+Plot p4
+```{r}
+df_p4 <- read_csv("data_p4.csv")
+
+
+df_long_p4 <- df_p4 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols        = starts_with("AF:"),
+    names_to    = "generation",
+    names_prefix = "AF:",
+    values_to   = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(generation <= 60000) %>%
+  group_by(mutation_id) %>%
+  arrange(generation) %>%
+  mutate(
+    next_gen = lead(generation),
+    gap      = next_gen - generation
+  ) %>%
+  mutate(frequency = ifelse(!is.na(gap) & gap > 1000, NA_real_, frequency)) %>%
+  select(-next_gen, -gap) %>%
+  ungroup() %>%
+  filter(!is.na(frequency))
+
+mutation_ids <- unique(df_long_p4$mutation_id)
+n_mut <- length(mutation_ids)
+
+set.seed(42)  
+trajectory_colors <- grDevices::hcl(
+  h = sample(seq(0, 360, length.out = n_mut)), 
+  c = runif(n_mut, 40, 100),                
+  l = runif(n_mut, 25, 75)                  
+)
+names(trajectory_colors) <- mutation_ids
+
+
+p_p4 <- ggplot(df_long_p4, aes(x = generation, y = frequency,
+                            group = mutation_id, color = mutation_id)) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
+  scale_color_manual(values = trajectory_colors) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = expression("Generation, " * italic(t)),
+    y = expression("Allele frequency, " * italic(f(t))),
+    title = "Allele frequency trajectories"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(legend.position = "none")
+```
+```{r}
+ print(p_p4)
+```
+
+
+
+
+Plot p3
+```{r}
+df_p3 <- read_csv("data_p3.csv")
+
+
+df_long_p3 <- df_p3 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>% 
+  filter(!is.na(frequency))
+
+
+df_long_p3 <- df_long_p3 %>% filter(generation <= 60000)
+
+mutation_ids <- unique(df_long_p3$mutation_id)
+n_mut <- length(mutation_ids)
+
+set.seed(42)  
+trajectory_colors <- grDevices::hcl(
+  h = sample(seq(0, 360, length.out = n_mut)), 
+  c = runif(n_mut, 40, 100),               
+  l = runif(n_mut, 25, 75)                 
+)
+names(trajectory_colors) <- mutation_ids
+
+
+p_p3 <- ggplot(df_long_p3, aes(x = generation, y = frequency,
+                            group = mutation_id, color = mutation_id)) +
+  geom_line(linewidth = 0.3, alpha = 0.8) +
+  scale_color_manual(values = trajectory_colors) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = expression("Generation, " * italic(t)),
+    y = expression("Allele frequency, " * italic(f(t))),
+    title = "Allele frequency trajectories"
+  ) +
+  theme_classic(base_size = 13) +
+  theme(legend.position = "none")
+```
+```{r}
+ print(p_p3)
+```

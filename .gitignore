@@ -1,0 +1,15 @@
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# macOS
+.DS_Store
+
+# Secrets
+.Renviron
+.env
+
+# Large data — uncomment/adjust once you know your layout
+# data/raw/

@@ -1,0 +1,742 @@
+---
+title: "ShinyAFTrajectories3"
+output: html_document
+date: "2026-08-25"
+---
+
+
+
+```{r}
+library(tidyverse)
+library(shiny)
+library(bslib)
+library(DT)
+library(zoo)
+```
+
+
+```{r}
+df_m1 <- read_csv("../output/data_m1.csv")
+
+dp_cols_m1  <- grep("^DP:", names(df_m1), value = TRUE)
+af_cols_m1  <- gsub("^DP:", "AF:", dp_cols_m1)
+
+for (i in seq_along(dp_cols_m1)) {
+  dp_col <- dp_cols_m1[i]
+  af_col <- af_cols_m1[i]
+  if (af_col %in% names(df_m1)) {
+    df_m1[[af_col]][df_m1[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m1 <- df_m1 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m1 <- df_m1 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_m2 <- read_csv("../output/data_m2.csv")
+
+dp_cols_m2  <- grep("^DP:", names(df_m2), value = TRUE)
+af_cols_m2  <- gsub("^DP:", "AF:", dp_cols_m2)
+
+for (i in seq_along(dp_cols_m2)) {
+  dp_col <- dp_cols_m2[i]
+  af_col <- af_cols_m2[i]
+  if (af_col %in% names(df_m2)) {
+    df_m2[[af_col]][df_m2[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m2 <- df_m2 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m2 <- df_m2 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_m3 <- read_csv("../output/data_m3.csv")
+
+dp_cols_m3  <- grep("^DP:", names(df_m3), value = TRUE)
+af_cols_m3  <- gsub("^DP:", "AF:", dp_cols_m3)
+
+for (i in seq_along(dp_cols_m3)) {
+  dp_col <- dp_cols_m3[i]
+  af_col <- af_cols_m3[i]
+  if (af_col %in% names(df_m3)) {
+    df_m3[[af_col]][df_m3[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m3 <- df_m3 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m3 <- df_m3 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_m4 <- read_csv("../output/data_m4.csv")
+
+dp_cols_m4  <- grep("^DP:", names(df_m4), value = TRUE)
+af_cols_m4  <- gsub("^DP:", "AF:", dp_cols_m4)
+
+for (i in seq_along(dp_cols_m4)) {
+  dp_col <- dp_cols_m4[i]
+  af_col <- af_cols_m4[i]
+  if (af_col %in% names(df_m4)) {
+    df_m4[[af_col]][df_m4[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m4 <- df_m4 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m4 <- df_m4 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_m5 <- read_csv("../output/data_m5.csv")
+
+dp_cols_m5  <- grep("^DP:", names(df_m5), value = TRUE)
+af_cols_m5  <- gsub("^DP:", "AF:", dp_cols_m5)
+
+for (i in seq_along(dp_cols_m5)) {
+  dp_col <- dp_cols_m5[i]
+  af_col <- af_cols_m5[i]
+  if (af_col %in% names(df_m5)) {
+    df_m5[[af_col]][df_m5[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m5 <- df_m5 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m5 <- df_m5 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_m6 <- read_csv("../output/data_m6.csv")
+
+dp_cols_m6  <- grep("^DP:", names(df_m6), value = TRUE)
+af_cols_m6  <- gsub("^DP:", "AF:", dp_cols_m6)
+
+for (i in seq_along(dp_cols_m6)) {
+  dp_col <- dp_cols_m6[i]
+  af_col <- af_cols_m6[i]
+  if (af_col %in% names(df_m6)) {
+    df_m6[[af_col]][df_m6[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m6 <- df_m6 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m6 <- df_m6 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_p1 <- read_csv("../output/data_p1.csv")
+
+dp_cols_p1  <- grep("^DP:", names(df_p1), value = TRUE)
+af_cols_p1  <- gsub("^DP:", "AF:", dp_cols_p1)
+
+for (i in seq_along(dp_cols_p1)) {
+  dp_col <- dp_cols_p1[i]
+  af_col <- af_cols_p1[i]
+  if (af_col %in% names(df_p1)) {
+    df_p1[[af_col]][df_p1[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p1 <- df_p1 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p1 <- df_p1 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_p2 <- read_csv("../output/data_p2.csv")
+
+dp_cols_p2  <- grep("^DP:", names(df_p2), value = TRUE)
+af_cols_p2  <- gsub("^DP:", "AF:", dp_cols_p2)
+
+for (i in seq_along(dp_cols_p2)) {
+  dp_col <- dp_cols_p2[i]
+  af_col <- af_cols_p2[i]
+  if (af_col %in% names(df_p2)) {
+    df_p2[[af_col]][df_p2[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p2 <- df_p2 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p2 <- df_p2 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_p3 <- read_csv("../output/data_p3.csv")
+
+dp_cols_p3  <- grep("^DP:", names(df_p3), value = TRUE)
+af_cols_p3  <- gsub("^DP:", "AF:", dp_cols_p3)
+
+for (i in seq_along(dp_cols_p3)) {
+  dp_col <- dp_cols_p3[i]
+  af_col <- af_cols_p3[i]
+  if (af_col %in% names(df_p3)) {
+    df_p3[[af_col]][df_p3[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p3 <- df_p3 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p3 <- df_p3 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_p4 <- read_csv("../output/data_p4.csv")
+
+dp_cols_p4  <- grep("^DP:", names(df_p4), value = TRUE)
+af_cols_p4  <- gsub("^DP:", "AF:", dp_cols_p4)
+
+for (i in seq_along(dp_cols_p1)) {
+  dp_col <- dp_cols_p4[i]
+  af_col <- af_cols_p4[i]
+  if (af_col %in% names(df_p4)) {
+    df_p4[[af_col]][df_p4[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p4 <- df_p4 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p4 <- df_p4 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_p5 <- read_csv("../output/data_p5.csv")
+
+dp_cols_p5  <- grep("^DP:", names(df_p5), value = TRUE)
+af_cols_p5  <- gsub("^DP:", "AF:", dp_cols_p5)
+
+for (i in seq_along(dp_cols_p1)) {
+  dp_col <- dp_cols_p5[i]
+  af_col <- af_cols_p5[i]
+  if (af_col %in% names(df_p5)) {
+    df_p5[[af_col]][df_p5[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p5 <- df_p5 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p5 <- df_p5 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+```{r}
+df_p6 <- read_csv("../output/data_p6.csv")
+
+dp_cols_p6  <- grep("^DP:", names(df_p6), value = TRUE)
+af_cols_p6  <- gsub("^DP:", "AF:", dp_cols_p6)
+
+for (i in seq_along(dp_cols_p6)) {
+  dp_col <- dp_cols_p6[i]
+  af_col <- af_cols_p6[i]
+  if (af_col %in% names(df_p6)) {
+    df_p6[[af_col]][df_p6[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p6 <- df_p6 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p6 <- df_p6 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+```
+
+
+
+
+
+SHINY
+```{r}
+populations <- list(
+  list(id = "m1", label = "Ara-1", long = df_long_m1, display = df_display_m1),
+  list(id = "m2", label = "Ara-2", long = df_long_m2, display = df_display_m2),
+  list(id = "m3", label = "Ara-3", long = df_long_m3, display = df_display_m3),
+  list(id = "m4", label = "Ara-4", long = df_long_m4, display = df_display_m4),
+  list(id = "m5", label = "Ara-5", long = df_long_m5, display = df_display_m5),
+  list(id = "m6", label = "Ara-6", long = df_long_m6, display = df_display_m6),
+  list(id = "p1", label = "Ara+1", long = df_long_p1, display = df_display_p1),
+  list(id = "p2", label = "Ara+2", long = df_long_p2, display = df_display_p2),
+  list(id = "p3", label = "Ara+3", long = df_long_p3, display = df_display_p3),
+  list(id = "p4", label = "Ara+4", long = df_long_p4, display = df_display_p4),
+  list(id = "p5", label = "Ara+5", long = df_long_p5, display = df_display_p5),
+  list(id = "p6", label = "Ara+6", long = df_long_p6, display = df_display_p6)
+)
+# ── UI ────────────────────────────────────────────────────────────────────────
+
+ui <- page_fillable(
+  title = "Tracking LTEE Allele Frequency Trajectories",
+
+  tags$style(HTML("
+    #left-col { overflow-y: auto; height: calc(100vh - 120px); }
+    #right-col { overflow-y: auto; height: calc(100vh - 120px); }
+    .pop-graph-card { margin-bottom: 12px; }
+    .pop-table-card { margin-bottom: 12px; }
+  ")),
+
+  tags$script(HTML("
+    if (!window.mutChecked) window.mutChecked = {};
+    document.addEventListener('change', function(e) {
+      var cb = e.target;
+      if (!cb.classList.contains('mut-check')) return;
+      var pop = cb.getAttribute('data-pop');
+      var mut = cb.getAttribute('data-mut');
+      if (!window.mutChecked[pop]) window.mutChecked[pop] = {};
+      window.mutChecked[pop][mut] = cb.checked;
+      var checked = Object.keys(window.mutChecked[pop]).filter(function(k) {
+        return window.mutChecked[pop][k];
+      });
+      Shiny.setInputValue('row_check_' + pop, checked, {priority: 'event'});
+    });
+  ")),
+
+  h2("Tracking LTEE Allele Frequency Trajectories"),
+
+  card(
+    padding = "4px 12px",
+    fill = FALSE,
+    tags$style(HTML("
+      #pop-checkbox-container .form-group { margin: 0 !important; }
+      #pop-checkbox-container .checkbox   { margin: 0 !important; }
+      #pop-checkbox-container label       { font-weight: normal; white-space: nowrap; }
+    ")),
+    div(
+      style = "display: flex; flex-direction: column; gap: 0px;",
+      strong("Populations:"),
+      div(
+        id = "pop-checkbox-container",
+        style = "display: flex; flex-direction: column; gap: 2px; padding-left: 8px;",
+        div(
+          style = "display: grid; grid-template-columns: repeat(6, 90px);",
+          lapply(populations[1:6], function(pop) {
+            checkboxInput(inputId = paste0("show_", pop$id), label = pop$label, value = pop$id == "m1")
+          })
+        ),
+        div(
+          style = "display: grid; grid-template-columns: repeat(6, 90px);",
+          lapply(populations[7:12], function(pop) {
+            checkboxInput(inputId = paste0("show_", pop$id), label = pop$label, value = FALSE)
+          })
+        )
+      )
+    )
+  ),
+
+  layout_columns(
+    col_widths = c(7, 5),
+    div(id = "left-col",  uiOutput("graph_panels")),
+    div(id = "right-col", uiOutput("table_panels"))
+  )
+)
+
+server <- function(input, output, session) {
+
+  active_pops <- reactive({
+    Filter(function(pop) isTRUE(input[[paste0("show_", pop$id)]]), populations)
+  })
+
+  # ── Highlighted mutations per population ──
+  selected_mutations <- reactiveValues()
+  for (pop in populations) {
+    selected_mutations[[pop$id]] <- character(0)
+  }
+
+  lapply(populations, function(pop) {
+    local({
+      pop <- pop
+      observeEvent(input[[paste0("row_check_", pop$id)]], {
+        selected_mutations[[pop$id]] <- input[[paste0("row_check_", pop$id)]]
+      }, ignoreNULL = FALSE)
+    })
+  })
+
+  output$graph_panels <- renderUI({
+    pops <- active_pops()
+    if (length(pops) == 0) return(p("Select at least one population above."))
+    lapply(pops, function(pop) {
+      card(class = "pop-graph-card", fill = FALSE, h4(pop$label),
+           plotOutput(paste0("plot_", pop$id), height = "300px"))
+    })
+  })
+
+  output$table_panels <- renderUI({
+    pops <- active_pops()
+    if (length(pops) == 0) return(NULL)
+    lapply(pops, function(pop) {
+      card(
+        class = "pop-table-card",
+        div(
+          style = "display: flex; align-items: center; gap: 16px; padding: 4px 0px;",
+          h4(pop$label, style = "margin: 0;"),
+          div(
+            class = "form-check form-switch",
+            tags$input(
+              class = "form-check-input", type = "checkbox", role = "switch",
+              id    = paste0("wide_toggle_", pop$id),
+              checked = NA,
+              onclick = paste0("Shiny.setInputValue('wide_", pop$id, "', this.checked, {priority: 'event'})")
+            ),
+            tags$label(class = "form-check-label", `for` = paste0("wide_toggle_", pop$id), "Wide format")
+          )
+        ),
+        DTOutput(paste0("table_", pop$id))
+      )
+    })
+  })
+
+  lapply(populations, function(pop) {
+    local({
+      pop <- pop
+
+      output[[paste0("plot_", pop$id)]] <- renderPlot({
+        mutation_ids <- unique(pop$long$mutation_id)
+        n_mut        <- length(mutation_ids)
+        set.seed(42)
+        traj_colors <- grDevices::hcl(
+          h = sample(seq(0, 360, length.out = n_mut)),
+          c = runif(n_mut, 40, 100),
+          l = runif(n_mut, 25, 75)
+        )
+        names(traj_colors) <- mutation_ids
+
+        highlighted <- selected_mutations[[pop$id]]
+
+        # Base plot with all lines at 0.4
+        p <- ggplot() +
+          geom_line(
+            data = pop$long,
+            aes(x = generation, y = frequency,
+                group = mutation_id, color = mutation_id),
+            linewidth = 0.3, alpha = 0.10
+          ) +
+          scale_color_manual(values = traj_colors) +
+          scale_x_continuous(labels = scales::comma) +
+          labs(
+            x     = expression("Generation, " * italic(t)),
+            y     = expression("Allele frequency, " * italic(f(t))),
+            title = pop$label
+          ) +
+          theme_classic(base_size = 13) +
+          theme(legend.position = "none")
+
+        # Draw highlighted lines on top at full alpha
+        if (length(highlighted) > 0) {
+          long_high <- pop$long[pop$long$mutation_id %in% highlighted, ]
+          if (nrow(long_high) > 0) {
+            p <- p + geom_line(
+              data = long_high,
+              aes(x = generation, y = frequency,
+                  group = mutation_id, color = mutation_id),
+              linewidth = 1.0, alpha = 1.0
+            )
+          }
+        }
+
+        p
+      })
+
+      output[[paste0("table_", pop$id)]] <- renderDT({
+        use_wide <- !isFALSE(input[[paste0("wide_", pop$id)]])
+
+        if (use_wide) {
+          wide_df <- pop$display %>%
+            mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+            pivot_wider(
+              id_cols      = c(mutation_id, Gene, Allele, Annotation, Position),
+              names_from   = Generation,
+              names_prefix = "AF:",
+              values_from  = Frequency
+            )
+
+          ordered_cols <- c("mutation_id", "Gene", "Allele", "Annotation", "Position")
+          wide_df      <- wide_df[, ordered_cols, drop = FALSE]
+
+          wide_df <- wide_df %>%
+            mutate(
+              Show = paste0(
+                '<input type="checkbox" class="mut-check" ',
+                'data-pop="', pop$id, '" ',
+                'data-mut="', mutation_id, '">'
+              )
+            ) %>%
+            select(Show, Gene, Allele, Annotation, Position)
+
+          datatable(
+            wide_df,
+            filter    = "top",
+            rownames  = FALSE,
+            escape    = FALSE,
+            selection = "none",
+            options   = list(
+              pageLength = 25,
+              paging     = TRUE,
+              autoWidth  = FALSE,
+              dom        = "lrtip",
+              columnDefs = list(list(orderable = FALSE, targets = 0))
+            )
+          )
+
+        } else {
+          datatable(
+            pop$display,
+            filter   = "top",
+            rownames = FALSE,
+            options  = list(
+              pageLength = 50,
+              paging     = TRUE,
+              autoWidth  = FALSE,
+              dom        = "lrtip"
+            )
+          )
+        }
+      })
+
+    }) # end local
+  }) # end lapply
+
+} # end server
+
+shinyApp(ui, server)
+```
+
+

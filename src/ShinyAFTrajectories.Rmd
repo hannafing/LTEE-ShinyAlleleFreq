@@ -502,8 +502,138 @@ populations <- list(
   list(id = "p5", label = "Ara+5", long = df_long_p5, display = df_display_p5),
   list(id = "p6", label = "Ara+6", long = df_long_p6, display = df_display_p6)
 )
+ 
+ 
+# ── breseq-style column renderers ─────────────────────────────────────────────
+#
+# Each function below returns one entry for the datatable() `columnDefs` list.
+# They are written as separate small functions rather than one large block so
+# that each table can pick only the columns it actually has, by index.
+#
+# Every render function checks `type !== 'display'` first and returns the raw
+# value in that case. DataTables calls the same render with type 'sort',
+# 'filter' and 'type', so this guard is what keeps numeric sorting and text
+# filtering working on the underlying values instead of on the formatted text.
+ 
+# Gene names: italic
+def_gene <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-gene"
+  )
+}
+ 
+# Allele:  "A→C" using U+2192
+# Splitting and rejoining on "->" also handles repeat-expansion notation such as "(T)7->8".
+def_allele <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-allele",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined) return data;",
+      "  return String(data).split('->').join('\\u2192');",
+      "}"
+    )
+  )
+}
+ 
+# Annotation
+#
+# Handles two cases:
+#   (a) A full breseq annotation string such as "N174T (AAC->ACC)".
+#       The amino acid change is drawn in blue and the single base that
+#       differs between the two codons is underlined in red, matching
+#       breseq's output. Strings like "intergenic (-71/+78)" or
+#       "coding (1402/1677 nt)" pass through with only the arrow swapped.
+def_annotation <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-annotation",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined) return data;",
+      "",
+      "  var text = String(data).split('->').join('\\u2192');",
+      "",
+      "  // (a) Amino acid change with codons.",
+      "  var aa = text.match(",
+      "    /^([A-Z*])(\\d+)([A-Z*])\\s*\\(([ACGTN]{3})\\u2192([ACGTN]{3})\\)$/",
+      "  );",
+      "  if (aa) {",
+      "    var refCodon = aa[4];",
+      "    var newCodon = aa[5];",
+      "    var refHtml  = '';",
+      "    var newHtml  = '';",
+      "    for (var i = 0; i < 3; i++) {",
+      "      if (refCodon.charAt(i) === newCodon.charAt(i)) {",
+      "        refHtml += refCodon.charAt(i);",
+      "        newHtml += newCodon.charAt(i);",
+      "      } else {",
+      "        refHtml += '<span class=\"breseq-base-changed\">' + refCodon.charAt(i) + '</span>';",
+      "        newHtml += '<span class=\"breseq-base-changed\">' + newCodon.charAt(i) + '</span>';",
+      "      }",
+      "    }",
+      "    return '<span class=\"breseq-aa\">' + aa[1] + aa[2] + aa[3] + '</span>' +",
+      "           ' (' + refHtml + '\\u2192' + newHtml + ')';",
+      "  }",
+      "",
+      "  return text;",
+      "}"
+    )
+  )
+}
+ 
+# Position and Generation: right aligned with comma thousands separators.
+def_integer <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-num",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined || data === '') return data;",
+      "  var n = Number(data);",
+      "  if (isNaN(n)) return data;",
+      "  return n.toLocaleString('en-US');",
+      "}"
+    )
+  )
+}
+ 
+# Frequency: stored as a proportion, shown as a percentage
+def_frequency <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-num",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined || data === '') return data;",
+      "  var n = Number(data);",
+      "  if (isNaN(n)) return data;",
+      "  return (n * 100).toFixed(1) + '%';",
+      "}"
+    )
+  )
+}
+ 
+# The checkbox column: no sorting, and excluded from search so that the raw
+# <input ... data-mut="..."> markup is not treated as searchable text.
+def_checkbox <- function(col_index) {
+  list(
+    targets    = col_index,
+    className  = "breseq-check",
+    orderable  = FALSE,
+    searchable = FALSE
+  )
+}
+ 
+ 
 # ── UI ────────────────────────────────────────────────────────────────────────
-
+ 
 ui <- page_fillable(
   title = "Tracking LTEE Allele Frequency Trajectories",
 
@@ -512,21 +642,124 @@ ui <- page_fillable(
     #right-col { overflow-y: auto; height: calc(100vh - 120px); }
     .pop-graph-card { margin-bottom: 12px; }
     .pop-table-card { margin-bottom: 12px; }
+
+    /* ── breseq-style columns (table colors left unchanged) ─────────────── */
+
+    /* Scoped to tbody so the column header stays upright. columnDefs applies
+       className to the header th as well as the body td. */
+    tbody td.breseq-gene { font-style: italic; }
+
+    .breseq-allele     { text-align: center; white-space: nowrap; }
+    .breseq-annotation { text-align: center; white-space: nowrap; }
+    .breseq-num        { text-align: right;
+                         font-variant-numeric: tabular-nums;
+                         white-space: nowrap; }
+    .breseq-check      { text-align: center; width: 28px; }
+
+    /* Used only by full breseq annotation strings such as
+       \"N174T (AAC->ACC)\". Bare class labels are left unstyled. */
+    .breseq-aa           { color: #0000CC; }
+    .breseq-base-changed { color: #CC0000; text-decoration: underline; }
+
+    /* Only the checkbox cell in the filter row is centered, not the inputs. */
+    table.dataTable thead tr:nth-child(2) td:first-child { text-align: center; }
+
+    .mut-show-header { white-space: nowrap; }
   ")),
 
   tags$script(HTML("
-    if (!window.mutChecked) window.mutChecked = {};
+    // window.mutChecked[pop][mutation_id] = TRUE/FALSE for each row checkbox.
+    // window.mutAllChecked[pop]           = TRUE/FALSE for the header checkbox.
+    if (!window.mutChecked)    window.mutChecked    = {};
+    if (!window.mutAllChecked) window.mutAllChecked = {};
+
+    // ── (1) A single row checkbox was toggled ────────────────────────────────
     document.addEventListener('change', function(e) {
       var cb = e.target;
       if (!cb.classList.contains('mut-check')) return;
+
       var pop = cb.getAttribute('data-pop');
       var mut = cb.getAttribute('data-mut');
+
       if (!window.mutChecked[pop]) window.mutChecked[pop] = {};
       window.mutChecked[pop][mut] = cb.checked;
+
+      // If any single row is unchecked, the header can no longer claim 'all'.
+      if (!cb.checked) {
+        window.mutAllChecked[pop] = false;
+        var header = document.querySelector('.mut-check-all[data-pop=\"' + pop + '\"]');
+        if (header) header.checked = false;
+      }
+
       var checked = Object.keys(window.mutChecked[pop]).filter(function(k) {
         return window.mutChecked[pop][k];
       });
       Shiny.setInputValue('row_check_' + pop, checked, {priority: 'event'});
+    });
+
+    // ── (2) The header select-all checkbox was toggled ───────────────────────
+    // We only report the toggle. The server owns the full list of mutation ids,
+    // because DT keeps only the current page of rows in the DOM.
+    document.addEventListener('change', function(e) {
+      var cb = e.target;
+      if (!cb.classList.contains('mut-check-all')) return;
+
+      var pop = cb.getAttribute('data-pop');
+      window.mutAllChecked[pop] = cb.checked;
+      Shiny.setInputValue('select_all_' + pop, cb.checked, {priority: 'event'});
+    });
+
+    // ── (3) Server replies with the full id list so JS state stays in sync ───
+    Shiny.addCustomMessageHandler('sync_checks', function(msg) {
+      var pop = msg.pop;
+      var ids = msg.ids;
+
+      if (!Array.isArray(ids)) {
+        ids = (ids === null || ids === undefined) ? [] : [ids];
+      }
+
+      window.mutChecked[pop] = {};
+      if (msg.checked) {
+        for (var i = 0; i < ids.length; i++) {
+          window.mutChecked[pop][ids[i]] = true;
+        }
+      }
+
+      var boxes = document.querySelectorAll('.mut-check[data-pop=\"' + pop + '\"]');
+      for (var j = 0; j < boxes.length; j++) {
+        boxes[j].checked = msg.checked;
+      }
+    });
+
+    // ── (4) After every DT redraw: place the select-all checkbox in the
+    //        filter row, and restore all checkbox states.
+    $(document).on('draw.dt', function() {
+
+      // Insert the select-all checkbox into the filter cell under Show.
+      $('.mut-show-header').each(function() {
+        var $th = $(this);
+        var pop = $th.attr('data-pop');
+        var idx = $th.index();
+
+        var $filterRow  = $th.closest('thead').find('tr').eq(1);
+        var $filterCell = $filterRow.children().eq(idx);
+        if ($filterCell.length === 0) return;
+
+        if ($filterCell.find('.mut-check-all').length === 0) {
+          $filterCell.empty().append(
+            '<input type=\"checkbox\" class=\"mut-check-all\" data-pop=\"' + pop + '\">'
+          );
+        }
+        $filterCell.find('.mut-check-all').prop('checked', !!window.mutAllChecked[pop]);
+      });
+
+      // Restore individual row checkboxes.
+      var boxes = document.querySelectorAll('.mut-check');
+      for (var i = 0; i < boxes.length; i++) {
+        var bpop = boxes[i].getAttribute('data-pop');
+        var bmut = boxes[i].getAttribute('data-mut');
+        boxes[i].checked = !!(window.mutChecked[bpop] && window.mutChecked[bpop][bmut]);
+      }
     });
   ")),
 
@@ -568,28 +801,64 @@ ui <- page_fillable(
     div(id = "right-col", uiOutput("table_panels"))
   )
 )
-
+ 
+ 
+# ── SERVER ────────────────────────────────────────────────────────────────────
+ 
 server <- function(input, output, session) {
-
+ 
   active_pops <- reactive({
     Filter(function(pop) isTRUE(input[[paste0("show_", pop$id)]]), populations)
   })
-
+ 
   # ── Highlighted mutations per population ──
   selected_mutations <- reactiveValues()
   for (pop in populations) {
     selected_mutations[[pop$id]] <- character(0)
   }
-
+ 
+  # ── Row checkboxes and the header select-all checkbox ──
   lapply(populations, function(pop) {
     local({
       pop <- pop
+ 
+      # Every mutation id in this population, built exactly the same way as the
+      # data-mut attribute written into the table below.
+      all_mut_ids <- unique(
+        paste(pop$display$Gene, pop$display$Position, pop$display$Allele, sep = "_")
+      )
+ 
+      # Individual row checkboxes.
       observeEvent(input[[paste0("row_check_", pop$id)]], {
         selected_mutations[[pop$id]] <- input[[paste0("row_check_", pop$id)]]
       }, ignoreNULL = FALSE)
+ 
+      # Header select-all checkbox.
+      observeEvent(input[[paste0("select_all_", pop$id)]], {
+        check_all <- isTRUE(input[[paste0("select_all_", pop$id)]])
+ 
+        if (check_all) {
+          new_selection <- all_mut_ids
+        } else {
+          new_selection <- character(0)
+        }
+ 
+        selected_mutations[[pop$id]] <- new_selection
+ 
+        # as.list() forces a JSON array. A plain length-1 character vector
+        # would be auto-unboxed into a bare string on the JS side.
+        session$sendCustomMessage(
+          "sync_checks",
+          list(
+            pop     = pop$id,
+            ids     = as.list(new_selection),
+            checked = check_all
+          )
+        )
+      }, ignoreInit = TRUE)
     })
   })
-
+ 
   output$graph_panels <- renderUI({
     pops <- active_pops()
     if (length(pops) == 0) return(p("Select at least one population above."))
@@ -598,7 +867,7 @@ server <- function(input, output, session) {
            plotOutput(paste0("plot_", pop$id), height = "300px"))
     })
   })
-
+ 
   output$table_panels <- renderUI({
     pops <- active_pops()
     if (length(pops) == 0) return(NULL)
@@ -623,11 +892,11 @@ server <- function(input, output, session) {
       )
     })
   })
-
+ 
   lapply(populations, function(pop) {
     local({
       pop <- pop
-
+ 
       output[[paste0("plot_", pop$id)]] <- renderPlot({
         mutation_ids <- unique(pop$long$mutation_id)
         n_mut        <- length(mutation_ids)
@@ -638,10 +907,10 @@ server <- function(input, output, session) {
           l = runif(n_mut, 25, 75)
         )
         names(traj_colors) <- mutation_ids
-
+ 
         highlighted <- selected_mutations[[pop$id]]
-
-        # Base plot with all lines at 0.4
+ 
+        # Base plot: every trajectory drawn faintly.
         p <- ggplot() +
           geom_line(
             data = pop$long,
@@ -658,8 +927,8 @@ server <- function(input, output, session) {
           ) +
           theme_classic(base_size = 13) +
           theme(legend.position = "none")
-
-        # Draw highlighted lines on top at full alpha
+ 
+        # Draw highlighted lines on top at full alpha.
         if (length(highlighted) > 0) {
           long_high <- pop$long[pop$long$mutation_id %in% highlighted, ]
           if (nrow(long_high) > 0) {
@@ -671,26 +940,21 @@ server <- function(input, output, session) {
             )
           }
         }
-
+ 
         p
       })
-
+ 
       output[[paste0("table_", pop$id)]] <- renderDT({
         use_wide <- !isFALSE(input[[paste0("wide_", pop$id)]])
-
+ 
         if (use_wide) {
+ 
+          # One row per mutation. distinct() collapses the long
+          # (mutation x generation) display frame to the identifying columns.
           wide_df <- pop$display %>%
             mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
-            pivot_wider(
-              id_cols      = c(mutation_id, Gene, Allele, Annotation, Position),
-              names_from   = Generation,
-              names_prefix = "AF:",
-              values_from  = Frequency
-            )
-
-          ordered_cols <- c("mutation_id", "Gene", "Allele", "Annotation", "Position")
-          wide_df      <- wide_df[, ordered_cols, drop = FALSE]
-
+            distinct(mutation_id, Gene, Allele, Annotation, Position)
+ 
           wide_df <- wide_df %>%
             mutate(
               Show = paste0(
@@ -700,9 +964,35 @@ server <- function(input, output, session) {
               )
             ) %>%
             select(Show, Gene, Allele, Annotation, Position)
-
+ 
+          # Custom header so the Show column can carry the select-all checkbox.
+          # Exactly five <th> elements, because rownames = FALSE.
+          header_container <- htmltools::withTags(table(
+            class = "display",
+            thead(
+              tr(
+                th("Show", class = "mut-show-header", `data-pop` = pop$id),
+                th("Gene"),
+                th("Allele"),
+                th("Annotation"),
+                th("Position")
+              )
+            )
+          ))
+ 
+          # Column indices are zero-based:
+          # 0 Show | 1 Gene | 2 Allele | 3 Annotation | 4 Position
+          wide_column_defs <- list(
+            def_checkbox(0),
+            def_gene(1),
+            def_allele(2),
+            def_annotation(3),
+            def_integer(4)
+          )
+ 
           datatable(
             wide_df,
+            container = header_container,
             filter    = "top",
             rownames  = FALSE,
             escape    = FALSE,
@@ -712,30 +1002,48 @@ server <- function(input, output, session) {
               paging     = TRUE,
               autoWidth  = FALSE,
               dom        = "lrtip",
-              columnDefs = list(list(orderable = FALSE, targets = 0))
+              columnDefs = wide_column_defs
             )
           )
-
+ 
         } else {
+ 
+          # pop$display column order:
+          # 0 Gene | 1 Allele | 2 Annotation | 3 Position | 4 Generation | 5 Frequency
+          long_column_defs <- list(
+            def_gene(0),
+            def_allele(1),
+            def_annotation(2),
+            def_integer(3),
+            def_integer(4),
+            def_frequency(5)
+          )
+ 
           datatable(
             pop$display,
-            filter   = "top",
-            rownames = FALSE,
-            options  = list(
+            filter    = "top",
+            rownames  = FALSE,
+            # escape must be FALSE here too: with escape = TRUE, DT would turn
+            # "A->C" into "A-&gt;C" before the render function ever sees it,
+            # and the arrow substitution would silently stop matching.
+            escape    = FALSE,
+            selection = "none",
+            options   = list(
               pageLength = 50,
               paging     = TRUE,
               autoWidth  = FALSE,
-              dom        = "lrtip"
+              dom        = "lrtip",
+              columnDefs = long_column_defs
             )
           )
         }
       })
-
+ 
     }) # end local
   }) # end lapply
-
+ 
 } # end server
-
+ 
 shinyApp(ui, server)
 ```
 

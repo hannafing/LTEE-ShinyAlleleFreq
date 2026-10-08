@@ -1,0 +1,1117 @@
+library(dplyr)
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(shiny)
+library(bslib)
+library(DT)
+library(zoo)
+
+
+df_m1 <- read_csv("output/data_m1.csv")
+
+dp_cols_m1  <- grep("^DP:", names(df_m1), value = TRUE)
+af_cols_m1  <- gsub("^DP:", "AF:", dp_cols_m1)
+
+for (i in seq_along(dp_cols_m1)) {
+  dp_col <- dp_cols_m1[i]
+  af_col <- af_cols_m1[i]
+  if (af_col %in% names(df_m1)) {
+    df_m1[[af_col]][df_m1[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m1 <- df_m1 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m1 <- df_m1 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+df_m2 <- read_csv("output/data_m2.csv")
+
+dp_cols_m2  <- grep("^DP:", names(df_m2), value = TRUE)
+af_cols_m2  <- gsub("^DP:", "AF:", dp_cols_m2)
+
+for (i in seq_along(dp_cols_m2)) {
+  dp_col <- dp_cols_m2[i]
+  af_col <- af_cols_m2[i]
+  if (af_col %in% names(df_m2)) {
+    df_m2[[af_col]][df_m2[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m2 <- df_m2 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m2 <- df_m2 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+df_m3 <- read_csv("output/data_m3.csv")
+
+dp_cols_m3  <- grep("^DP:", names(df_m3), value = TRUE)
+af_cols_m3  <- gsub("^DP:", "AF:", dp_cols_m3)
+
+for (i in seq_along(dp_cols_m3)) {
+  dp_col <- dp_cols_m3[i]
+  af_col <- af_cols_m3[i]
+  if (af_col %in% names(df_m3)) {
+    df_m3[[af_col]][df_m3[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m3 <- df_m3 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m3 <- df_m3 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+df_m4 <- read_csv("output/data_m4.csv")
+
+dp_cols_m4  <- grep("^DP:", names(df_m4), value = TRUE)
+af_cols_m4  <- gsub("^DP:", "AF:", dp_cols_m4)
+
+for (i in seq_along(dp_cols_m4)) {
+  dp_col <- dp_cols_m4[i]
+  af_col <- af_cols_m4[i]
+  if (af_col %in% names(df_m4)) {
+    df_m4[[af_col]][df_m4[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m4 <- df_m4 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m4 <- df_m4 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_m5 <- read_csv("output/data_m5.csv")
+
+dp_cols_m5  <- grep("^DP:", names(df_m5), value = TRUE)
+af_cols_m5  <- gsub("^DP:", "AF:", dp_cols_m5)
+
+for (i in seq_along(dp_cols_m5)) {
+  dp_col <- dp_cols_m5[i]
+  af_col <- af_cols_m5[i]
+  if (af_col %in% names(df_m5)) {
+    df_m5[[af_col]][df_m5[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m5 <- df_m5 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m5 <- df_m5 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_m6 <- read_csv("output/data_m6.csv")
+
+dp_cols_m6  <- grep("^DP:", names(df_m6), value = TRUE)
+af_cols_m6  <- gsub("^DP:", "AF:", dp_cols_m6)
+
+for (i in seq_along(dp_cols_m6)) {
+  dp_col <- dp_cols_m6[i]
+  af_col <- af_cols_m6[i]
+  if (af_col %in% names(df_m6)) {
+    df_m6[[af_col]][df_m6[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_m6 <- df_m6 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_m6 <- df_m6 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_p1 <- read_csv("output/data_p1.csv")
+
+dp_cols_p1  <- grep("^DP:", names(df_p1), value = TRUE)
+af_cols_p1  <- gsub("^DP:", "AF:", dp_cols_p1)
+
+for (i in seq_along(dp_cols_p1)) {
+  dp_col <- dp_cols_p1[i]
+  af_col <- af_cols_p1[i]
+  if (af_col %in% names(df_p1)) {
+    df_p1[[af_col]][df_p1[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p1 <- df_p1 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p1 <- df_p1 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_p2 <- read_csv("output/data_p2.csv")
+
+dp_cols_p2  <- grep("^DP:", names(df_p2), value = TRUE)
+af_cols_p2  <- gsub("^DP:", "AF:", dp_cols_p2)
+
+for (i in seq_along(dp_cols_p2)) {
+  dp_col <- dp_cols_p2[i]
+  af_col <- af_cols_p2[i]
+  if (af_col %in% names(df_p2)) {
+    df_p2[[af_col]][df_p2[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p2 <- df_p2 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p2 <- df_p2 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_p3 <- read_csv("output/data_p3.csv")
+
+dp_cols_p3  <- grep("^DP:", names(df_p3), value = TRUE)
+af_cols_p3  <- gsub("^DP:", "AF:", dp_cols_p3)
+
+for (i in seq_along(dp_cols_p3)) {
+  dp_col <- dp_cols_p3[i]
+  af_col <- af_cols_p3[i]
+  if (af_col %in% names(df_p3)) {
+    df_p3[[af_col]][df_p3[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p3 <- df_p3 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p3 <- df_p3 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_p4 <- read_csv("output/data_p4.csv")
+
+dp_cols_p4  <- grep("^DP:", names(df_p4), value = TRUE)
+af_cols_p4  <- gsub("^DP:", "AF:", dp_cols_p4)
+
+for (i in seq_along(dp_cols_p1)) {
+  dp_col <- dp_cols_p4[i]
+  af_col <- af_cols_p4[i]
+  if (af_col %in% names(df_p4)) {
+    df_p4[[af_col]][df_p4[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p4 <- df_p4 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p4 <- df_p4 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_p5 <- read_csv("output/data_p5.csv")
+
+dp_cols_p5  <- grep("^DP:", names(df_p5), value = TRUE)
+af_cols_p5  <- gsub("^DP:", "AF:", dp_cols_p5)
+
+for (i in seq_along(dp_cols_p1)) {
+  dp_col <- dp_cols_p5[i]
+  af_col <- af_cols_p5[i]
+  if (af_col %in% names(df_p5)) {
+    df_p5[[af_col]][df_p5[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p5 <- df_p5 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p5 <- df_p5 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+df_p6 <- read_csv("output/data_p6.csv")
+
+dp_cols_p6  <- grep("^DP:", names(df_p6), value = TRUE)
+af_cols_p6  <- gsub("^DP:", "AF:", dp_cols_p6)
+
+for (i in seq_along(dp_cols_p6)) {
+  dp_col <- dp_cols_p6[i]
+  af_col <- af_cols_p6[i]
+  if (af_col %in% names(df_p6)) {
+    df_p6[[af_col]][df_p6[[dp_col]] < 5] <- NA
+  }
+}
+
+df_long_p6 <- df_p6 %>%
+  mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+  select(mutation_id, Gene, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "generation",
+    names_prefix = "AF:",
+    values_to = "frequency"
+  ) %>%
+  mutate(generation = as.numeric(generation)) %>%
+  filter(!is.na(frequency), generation <= 60000)
+
+df_display_p6 <- df_p6 %>%
+  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  pivot_longer(
+    cols = starts_with("AF:"),
+    names_to = "Generation",
+    names_prefix = "AF:",
+    values_to = "Frequency"
+  ) %>%
+  mutate(Generation = as.numeric(Generation)) %>%
+  filter(!is.na(Frequency), Generation <= 60000)
+
+
+
+
+
+
+#SHINY
+populations <- list(
+  list(id = "m1", label = "Ara-1", long = df_long_m1, display = df_display_m1),
+  list(id = "m2", label = "Ara-2", long = df_long_m2, display = df_display_m2),
+  list(id = "m3", label = "Ara-3", long = df_long_m3, display = df_display_m3),
+  list(id = "m4", label = "Ara-4", long = df_long_m4, display = df_display_m4),
+  list(id = "m5", label = "Ara-5", long = df_long_m5, display = df_display_m5),
+  list(id = "m6", label = "Ara-6", long = df_long_m6, display = df_display_m6),
+  list(id = "p1", label = "Ara+1", long = df_long_p1, display = df_display_p1),
+  list(id = "p2", label = "Ara+2", long = df_long_p2, display = df_display_p2),
+  list(id = "p3", label = "Ara+3", long = df_long_p3, display = df_display_p3),
+  list(id = "p4", label = "Ara+4", long = df_long_p4, display = df_display_p4),
+  list(id = "p5", label = "Ara+5", long = df_long_p5, display = df_display_p5),
+  list(id = "p6", label = "Ara+6", long = df_long_p6, display = df_display_p6)
+)
+
+
+# ── breseq-style column renderers ─────────────────────────────────────────────
+#
+# Each function below returns one entry for the datatable() `columnDefs` list.
+# They are written as separate small functions rather than one large block so
+# that each table can pick only the columns it actually has, by index.
+#
+# Every render function checks `type !== 'display'` first and returns the raw
+# value in that case. DataTables calls the same render with type 'sort',
+# 'filter' and 'type', so this guard is what keeps numeric sorting and text
+# filtering working on the underlying values instead of on the formatted text.
+
+# Gene names: italic
+def_gene <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-gene"
+  )
+}
+
+# Allele:  "A→C" using U+2192
+# Splitting and rejoining on "->" also handles repeat-expansion notation such as "(T)7->8".
+def_allele <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-allele",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined) return data;",
+      "  return String(data).split('->').join('\\u2192');",
+      "}"
+    )
+  )
+}
+
+# Annotation
+#
+# Handles two cases:
+#   (a) A full breseq annotation string such as "N174T (AAC->ACC)".
+#       The amino acid change is drawn in blue and the single base that
+#       differs between the two codons is underlined in red, matching
+#       breseq's output. Strings like "intergenic (-71/+78)" or
+#       "coding (1402/1677 nt)" pass through with only the arrow swapped.
+def_annotation <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-annotation",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined) return data;",
+      "",
+      "  var text = String(data).split('->').join('\\u2192');",
+      "",
+      "  // (a) Amino acid change with codons.",
+      "  var aa = text.match(",
+      "    /^([A-Z*])(\\d+)([A-Z*])\\s*\\(([ACGTN]{3})\\u2192([ACGTN]{3})\\)$/",
+      "  );",
+      "  if (aa) {",
+      "    var refCodon = aa[4];",
+      "    var newCodon = aa[5];",
+      "    var refHtml  = '';",
+      "    var newHtml  = '';",
+      "    for (var i = 0; i < 3; i++) {",
+      "      if (refCodon.charAt(i) === newCodon.charAt(i)) {",
+      "        refHtml += refCodon.charAt(i);",
+      "        newHtml += newCodon.charAt(i);",
+      "      } else {",
+      "        refHtml += '<span class=\"breseq-base-changed\">' + refCodon.charAt(i) + '</span>';",
+      "        newHtml += '<span class=\"breseq-base-changed\">' + newCodon.charAt(i) + '</span>';",
+      "      }",
+      "    }",
+      "    return '<span class=\"breseq-aa\">' + aa[1] + aa[2] + aa[3] + '</span>' +",
+      "           ' (' + refHtml + '\\u2192' + newHtml + ')';",
+      "  }",
+      "",
+      "  return text;",
+      "}"
+    )
+  )
+}
+
+# Position and Generation: right aligned with comma thousands separators.
+def_integer <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-num",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined || data === '') return data;",
+      "  var n = Number(data);",
+      "  if (isNaN(n)) return data;",
+      "  return n.toLocaleString('en-US');",
+      "}"
+    )
+  )
+}
+
+# Frequency: stored as a proportion, shown as a percentage
+def_frequency <- function(col_index) {
+  list(
+    targets   = col_index,
+    className = "breseq-num",
+    render    = DT::JS(
+      "function(data, type, row, meta) {",
+      "  if (type !== 'display') return data;",
+      "  if (data === null || data === undefined || data === '') return data;",
+      "  var n = Number(data);",
+      "  if (isNaN(n)) return data;",
+      "  return (n * 100).toFixed(1) + '%';",
+      "}"
+    )
+  )
+}
+
+# The checkbox column: no sorting, and excluded from search so that the raw
+# <input ... data-mut="..."> markup is not treated as searchable text.
+def_checkbox <- function(col_index) {
+  list(
+    targets    = col_index,
+    className  = "breseq-check",
+    orderable  = FALSE,
+    searchable = FALSE
+  )
+}
+
+# ── MOB (mobile element insertion) reformatting ───────────────────────────────
+#
+# The CSV encodes mobile element insertions in the Allele column as
+# underscore-separated fields:
+#
+#   MOB_16972_16974_IS150_1
+#    |    |     |     |    |
+#    |    |     |     |    +-- strand: 1 or -1
+#    |    |     |     +------- name of the IS element
+#    |    |     +------------- end coordinate of the duplicated target site
+#    |    +------------------- start coordinate of the duplicated target site
+#    +------------------------ marks the row as a mobile element insertion
+#
+# breseq writes the same event as:  IS150(+1) +3bp
+# where 3 = 16974 - 16972 + 1.
+#
+# Rows that are not MOB rows are returned unchanged.
+
+is_mob_allele <- function(allele) {
+  grepl("^MOB_", allele)
+}
+
+format_mob_allele <- function(allele) {
+  out <- allele
+  
+  for (i in seq_along(allele)) {
+    
+    if (!is_mob_allele(allele[i])) next
+    
+    parts <- strsplit(allele[i], "_", fixed = TRUE)[[1]]
+    if (length(parts) < 5) next
+    
+    start_pos <- suppressWarnings(as.numeric(parts[2]))
+    end_pos   <- suppressWarnings(as.numeric(parts[3]))
+    strand    <- suppressWarnings(as.numeric(parts[length(parts)]))
+    
+    # Everything between the end coordinate and the strand is the element
+    # name. Joining the pieces back together allows for IS names that
+    # themselves contain an underscore.
+    is_name <- paste(parts[4:(length(parts) - 1)], collapse = "_")
+    
+    if (is.na(start_pos) || is.na(end_pos) || is.na(strand)) next
+    
+    dup_length <- end_pos - start_pos + 1
+    
+    if (strand >= 0) {
+      strand_label <- "+1"
+    } else {
+      strand_label <- "-1"
+    }
+    
+    if (dup_length >= 0) {
+      length_label <- paste0("+", dup_length, "bp")
+    } else {
+      length_label <- paste0("-", abs(dup_length), "bp")
+    }
+    
+    out[i] <- paste0(is_name, "(", strand_label, ") ", length_label)
+  }
+  
+  out
+}
+
+# Rewrites both columns at once. Annotation is set from the *original*
+# Allele string, so this must run before Allele is overwritten -- which is
+# why both happen inside a single mutate() in this order.
+apply_breseq_mob <- function(df) {
+  df %>%
+    mutate(
+      Annotation = ifelse(is_mob_allele(Allele), "MOB", Annotation),
+      Allele     = format_mob_allele(Allele)
+    )
+}
+
+
+# ── UI ────────────────────────────────────────────────────────────────────────
+
+ui <- page_fillable(
+  title = "Tracking LTEE Allele Frequency Trajectories",
+  
+  tags$style(HTML("
+    #left-col { overflow-y: auto; height: calc(100vh - 120px); }
+    #right-col { overflow-y: auto; height: calc(100vh - 120px); }
+    .pop-graph-card { margin-bottom: 12px; }
+    .pop-table-card { margin-bottom: 12px; }
+
+    /* ── breseq-style columns (table colors left unchanged) ─────────────── */
+
+    /* Scoped to tbody so the column header stays upright. columnDefs applies
+       className to the header th as well as the body td. */
+    tbody td.breseq-gene { font-style: italic; }
+
+    .breseq-allele     { text-align: center; white-space: nowrap; }
+    .breseq-annotation { text-align: center; white-space: nowrap; }
+    .breseq-num        { text-align: right;
+                         font-variant-numeric: tabular-nums;
+                         white-space: nowrap; }
+    .breseq-check      { text-align: center; width: 28px; }
+
+    /* Used only by full breseq annotation strings such as
+       \"N174T (AAC->ACC)\". Bare class labels are left unstyled. */
+    .breseq-aa           { color: #0000CC; }
+    .breseq-base-changed { color: #CC0000; text-decoration: underline; }
+
+    /* Only the checkbox cell in the filter row is centered, not the inputs. */
+    table.dataTable thead tr:nth-child(2) td:first-child { text-align: center; }
+
+    .mut-show-header { white-space: nowrap; }
+  ")),
+  
+  tags$script(HTML("
+    // window.mutChecked[pop][mutation_id] = TRUE/FALSE for each row checkbox.
+    // window.mutAllChecked[pop]           = TRUE/FALSE for the header checkbox.
+    if (!window.mutChecked)    window.mutChecked    = {};
+    if (!window.mutAllChecked) window.mutAllChecked = {};
+
+    // ── (1) A single row checkbox was toggled ────────────────────────────────
+    document.addEventListener('change', function(e) {
+      var cb = e.target;
+      if (!cb.classList.contains('mut-check')) return;
+
+      var pop = cb.getAttribute('data-pop');
+      var mut = cb.getAttribute('data-mut');
+
+      if (!window.mutChecked[pop]) window.mutChecked[pop] = {};
+      window.mutChecked[pop][mut] = cb.checked;
+
+      // If any single row is unchecked, the header can no longer claim 'all'.
+      if (!cb.checked) {
+        window.mutAllChecked[pop] = false;
+        var header = document.querySelector('.mut-check-all[data-pop=\"' + pop + '\"]');
+        if (header) header.checked = false;
+      }
+
+      var checked = Object.keys(window.mutChecked[pop]).filter(function(k) {
+        return window.mutChecked[pop][k];
+      });
+      Shiny.setInputValue('row_check_' + pop, checked, {priority: 'event'});
+    });
+
+    // ── (2) The header select-all checkbox was toggled ───────────────────────
+    // We only report the toggle. The server owns the full list of mutation ids,
+    // because DT keeps only the current page of rows in the DOM.
+    document.addEventListener('change', function(e) {
+      var cb = e.target;
+      if (!cb.classList.contains('mut-check-all')) return;
+
+      var pop = cb.getAttribute('data-pop');
+      window.mutAllChecked[pop] = cb.checked;
+      Shiny.setInputValue('select_all_' + pop, cb.checked, {priority: 'event'});
+    });
+
+    // ── (3) Server replies with the full id list so JS state stays in sync ───
+    Shiny.addCustomMessageHandler('sync_checks', function(msg) {
+      var pop = msg.pop;
+      var ids = msg.ids;
+
+      if (!Array.isArray(ids)) {
+        ids = (ids === null || ids === undefined) ? [] : [ids];
+      }
+
+      window.mutChecked[pop] = {};
+      if (msg.checked) {
+        for (var i = 0; i < ids.length; i++) {
+          window.mutChecked[pop][ids[i]] = true;
+        }
+      }
+
+      var boxes = document.querySelectorAll('.mut-check[data-pop=\"' + pop + '\"]');
+      for (var j = 0; j < boxes.length; j++) {
+        boxes[j].checked = msg.checked;
+      }
+    });
+
+    // ── (4) After every DT redraw: place the select-all checkbox in the
+    //        filter row, and restore all checkbox states.
+    $(document).on('draw.dt', function() {
+
+      // Insert the select-all checkbox into the filter cell under Show.
+      $('.mut-show-header').each(function() {
+        var $th = $(this);
+        var pop = $th.attr('data-pop');
+        var idx = $th.index();
+
+        var $filterRow  = $th.closest('thead').find('tr').eq(1);
+        var $filterCell = $filterRow.children().eq(idx);
+        if ($filterCell.length === 0) return;
+
+        if ($filterCell.find('.mut-check-all').length === 0) {
+          $filterCell.empty().append(
+            '<input type=\"checkbox\" class=\"mut-check-all\" data-pop=\"' + pop + '\">'
+          );
+        }
+        $filterCell.find('.mut-check-all').prop('checked', !!window.mutAllChecked[pop]);
+      });
+
+      // Restore individual row checkboxes.
+      var boxes = document.querySelectorAll('.mut-check');
+      for (var i = 0; i < boxes.length; i++) {
+        var bpop = boxes[i].getAttribute('data-pop');
+        var bmut = boxes[i].getAttribute('data-mut');
+        boxes[i].checked = !!(window.mutChecked[bpop] && window.mutChecked[bpop][bmut]);
+      }
+    });
+  ")),
+  
+  h2("Tracking LTEE Allele Frequency Trajectories"),
+  
+  card(
+    padding = "4px 12px",
+    fill = FALSE,
+    tags$style(HTML("
+      #pop-checkbox-container .form-group { margin: 0 !important; }
+      #pop-checkbox-container .checkbox   { margin: 0 !important; }
+      #pop-checkbox-container label       { font-weight: normal; white-space: nowrap; }
+    ")),
+    div(
+      style = "display: flex; flex-direction: column; gap: 0px;",
+      strong("Populations:"),
+      div(
+        id = "pop-checkbox-container",
+        style = "display: flex; flex-direction: column; gap: 2px; padding-left: 8px;",
+        div(
+          style = "display: grid; grid-template-columns: repeat(6, 90px);",
+          lapply(populations[1:6], function(pop) {
+            checkboxInput(inputId = paste0("show_", pop$id), label = pop$label, value = pop$id == "m1")
+          })
+        ),
+        div(
+          style = "display: grid; grid-template-columns: repeat(6, 90px);",
+          lapply(populations[7:12], function(pop) {
+            checkboxInput(inputId = paste0("show_", pop$id), label = pop$label, value = FALSE)
+          })
+        )
+      )
+    )
+  ),
+  
+  layout_columns(
+    col_widths = c(7, 5),
+    div(id = "left-col",  uiOutput("graph_panels")),
+    div(id = "right-col", uiOutput("table_panels"))
+  )
+)
+
+
+# ── SERVER ────────────────────────────────────────────────────────────────────
+
+server <- function(input, output, session) {
+  
+  active_pops <- reactive({
+    Filter(function(pop) isTRUE(input[[paste0("show_", pop$id)]]), populations)
+  })
+  
+  # ── Highlighted mutations per population ──
+  selected_mutations <- reactiveValues()
+  for (pop in populations) {
+    selected_mutations[[pop$id]] <- character(0)
+  }
+  
+  # ── Row checkboxes and the header select-all checkbox ──
+  lapply(populations, function(pop) {
+    local({
+      pop <- pop
+      
+      # Every mutation id in this population, built exactly the same way as the
+      # data-mut attribute written into the table below.
+      all_mut_ids <- unique(
+        paste(pop$display$Gene, pop$display$Position, pop$display$Allele, sep = "_")
+      )
+      
+      # Individual row checkboxes.
+      observeEvent(input[[paste0("row_check_", pop$id)]], {
+        selected_mutations[[pop$id]] <- input[[paste0("row_check_", pop$id)]]
+      }, ignoreNULL = FALSE)
+      
+      # Header select-all checkbox.
+      observeEvent(input[[paste0("select_all_", pop$id)]], {
+        check_all <- isTRUE(input[[paste0("select_all_", pop$id)]])
+        
+        if (check_all) {
+          new_selection <- all_mut_ids
+        } else {
+          new_selection <- character(0)
+        }
+        
+        selected_mutations[[pop$id]] <- new_selection
+        
+        # as.list() forces a JSON array. A plain length-1 character vector
+        # would be auto-unboxed into a bare string on the JS side.
+        session$sendCustomMessage(
+          "sync_checks",
+          list(
+            pop     = pop$id,
+            ids     = as.list(new_selection),
+            checked = check_all
+          )
+        )
+      }, ignoreInit = TRUE)
+    })
+  })
+  
+  output$graph_panels <- renderUI({
+    pops <- active_pops()
+    if (length(pops) == 0) return(p("Select at least one population above."))
+    lapply(pops, function(pop) {
+      card(class = "pop-graph-card", fill = FALSE, h4(pop$label),
+           plotOutput(paste0("plot_", pop$id), height = "300px"))
+    })
+  })
+  
+  output$table_panels <- renderUI({
+    pops <- active_pops()
+    if (length(pops) == 0) return(NULL)
+    lapply(pops, function(pop) {
+      card(
+        class = "pop-table-card",
+        div(
+          style = "display: flex; align-items: center; gap: 16px; padding: 4px 0px;",
+          h4(pop$label, style = "margin: 0;"),
+          div(
+            class = "form-check form-switch",
+            tags$input(
+              class = "form-check-input", type = "checkbox", role = "switch",
+              id    = paste0("wide_toggle_", pop$id),
+              checked = NA,
+              onclick = paste0("Shiny.setInputValue('wide_", pop$id, "', this.checked, {priority: 'event'})")
+            ),
+            tags$label(class = "form-check-label", `for` = paste0("wide_toggle_", pop$id), "Wide format")
+          )
+        ),
+        DTOutput(paste0("table_", pop$id))
+      )
+    })
+  })
+  
+  lapply(populations, function(pop) {
+    local({
+      pop <- pop
+      
+      output[[paste0("plot_", pop$id)]] <- renderPlot({
+        mutation_ids <- unique(pop$long$mutation_id)
+        n_mut        <- length(mutation_ids)
+        set.seed(42)
+        traj_colors <- grDevices::hcl(
+          h = sample(seq(0, 360, length.out = n_mut)),
+          c = runif(n_mut, 40, 100),
+          l = runif(n_mut, 25, 75)
+        )
+        names(traj_colors) <- mutation_ids
+        
+        highlighted <- selected_mutations[[pop$id]]
+        
+        # Base plot: every trajectory drawn faintly.
+        p <- ggplot() +
+          geom_line(
+            data = pop$long,
+            aes(x = generation, y = frequency,
+                group = mutation_id, color = mutation_id),
+            linewidth = 0.3, alpha = 0.10
+          ) +
+          scale_color_manual(values = traj_colors) +
+          scale_x_continuous(labels = scales::comma) +
+          labs(
+            x     = expression("Generation, " * italic(t)),
+            y     = expression("Allele frequency, " * italic(f(t))),
+            title = pop$label
+          ) +
+          theme_classic(base_size = 13) +
+          theme(legend.position = "none")
+        
+        # Draw highlighted lines on top at full alpha.
+        if (length(highlighted) > 0) {
+          long_high <- pop$long[pop$long$mutation_id %in% highlighted, ]
+          if (nrow(long_high) > 0) {
+            p <- p + geom_line(
+              data = long_high,
+              aes(x = generation, y = frequency,
+                  group = mutation_id, color = mutation_id),
+              linewidth = 1.0, alpha = 1.0
+            )
+          }
+        }
+        
+        p
+      })
+      
+      output[[paste0("table_", pop$id)]] <- renderDT({
+        use_wide <- !isFALSE(input[[paste0("wide_", pop$id)]])
+        
+        if (use_wide) {
+          
+          # mutation_id is built from the raw Allele string, before the MOB
+          # rewrite, so that the data-mut attribute on each checkbox still
+          # matches the mutation_id values in pop$long.
+          wide_df <- pop$display %>%
+            mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
+            distinct(mutation_id, Gene, Allele, Annotation, Position) %>%
+            apply_breseq_mob()
+          
+          wide_df <- wide_df %>%
+            mutate(
+              Show = paste0(
+                '<input type="checkbox" class="mut-check" ',
+                'data-pop="', pop$id, '" ',
+                'data-mut="', mutation_id, '">'
+              )
+            ) %>%
+            select(Show, Gene, Allele, Annotation, Position)
+          
+          header_container <- htmltools::withTags(table(
+            class = "display",
+            thead(
+              tr(
+                th("Show", class = "mut-show-header", `data-pop` = pop$id),
+                th("Gene"),
+                th("Allele"),
+                th("Annotation"),
+                th("Position")
+              )
+            )
+          ))
+          
+          # 0 Show | 1 Gene | 2 Allele | 3 Annotation | 4 Position
+          wide_column_defs <- list(
+            def_checkbox(0),
+            def_gene(1),
+            def_allele(2),
+            def_annotation(3),
+            def_integer(4)
+          )
+          
+          datatable(
+            wide_df,
+            container = header_container,
+            filter    = "top",
+            rownames  = FALSE,
+            escape    = FALSE,
+            selection = "none",
+            options   = list(
+              pageLength = 25,
+              paging     = TRUE,
+              autoWidth  = FALSE,
+              dom        = "lrtip",
+              columnDefs = wide_column_defs
+            )
+          )
+          
+        } else {
+          
+          long_df <- apply_breseq_mob(pop$display)
+          
+          # 0 Gene | 1 Allele | 2 Annotation | 3 Position | 4 Generation | 5 Frequency
+          long_column_defs <- list(
+            def_gene(0),
+            def_allele(1),
+            def_annotation(2),
+            def_integer(3),
+            def_integer(4),
+            def_frequency(5)
+          )
+          
+          datatable(
+            long_df,
+            filter    = "top",
+            rownames  = FALSE,
+            escape    = FALSE,
+            selection = "none",
+            options   = list(
+              pageLength = 50,
+              paging     = TRUE,
+              autoWidth  = FALSE,
+              dom        = "lrtip",
+              columnDefs = long_column_defs
+            )
+          )
+        }
+      })
+      
+    }) # end local
+  }) # end lapply
+  
+} # end server
+
+shinyApp(ui, server)

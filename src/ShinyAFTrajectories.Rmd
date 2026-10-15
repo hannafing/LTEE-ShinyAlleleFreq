@@ -565,6 +565,66 @@ format_mob_allele <- function(allele) {
   out
 }
 
+# ── Indel reformatting ────────────────────────────────────────────────────────
+#
+# Good et al. merge every indel variant seen at a site into one string:
+#
+#   indel;+A;-1;+AA
+#
+# Each ";"-separated token is one of:
+#   -1     deletion of 1 bp                 -> breseq: Δ1 bp
+#   +AA    insertion of the bases AA        -> breseq: +AA
+#   +123   duplication of 123 bp (a number) -> breseq: +123 bp
+#   C+CC   base change C plus insertion CC  -> shown as +CC
+#   A      a SNP read merged into the indel -> dropped (not an indel)
+#
+# Every remaining variant is shown, joined with " / ", with duplicates removed:
+#   indel;+A;-1;+AA  ->  +A / Δ1 bp / +AA
+#
+# Rows that are not indel rows are returned unchanged.
+
+is_indel_allele <- function(allele) {
+  grepl("^indel;", allele)
+}
+
+format_indel_token <- function(token) {
+  # Drop the leading base on "C+CC" / "A-1": keep only the indel part.
+  token <- sub("^[ACGTN]+(?=[+-])", "", token, perl = TRUE)
+
+  if (grepl("^-[0-9]+$", token)) {
+    n <- as.numeric(substring(token, 2))
+    return(paste0("Δ", format(n, big.mark = ",", scientific = FALSE), " bp"))
+  }
+  if (grepl("^\\+[0-9]+$", token)) {
+    n <- as.numeric(substring(token, 2))
+    return(paste0("+", format(n, big.mark = ",", scientific = FALSE), " bp"))
+  }
+  if (grepl("^\\+[ACGTN]+$", token)) {
+    return(token)
+  }
+
+  # A bare base (merged-in SNP) or anything unrecognised.
+  NA_character_
+}
+
+format_indel_allele <- function(allele) {
+  out <- allele
+
+  for (i in seq_along(allele)) {
+
+    if (!is_indel_allele(allele[i])) next
+
+    tokens <- strsplit(allele[i], ";", fixed = TRUE)[[1]][-1]
+    pretty <- unique(vapply(tokens, format_indel_token, character(1), USE.NAMES = FALSE))
+    pretty <- pretty[!is.na(pretty)]
+
+    # Leave the raw string if nothing could be parsed, so no information is lost.
+    if (length(pretty) > 0) out[i] <- paste(pretty, collapse = " / ")
+  }
+
+  out
+}
+
 # Rewrites both columns at once. Annotation is set from the *original*
 # Allele string, so this must run before Allele is overwritten -- which is
 # why both happen inside a single mutate() in this order.
@@ -572,7 +632,7 @@ apply_breseq_mob <- function(df) {
   df %>%
     mutate(
       Annotation = ifelse(is_mob_allele(Allele), "MOB", Annotation),
-      Allele     = format_mob_allele(Allele)
+      Allele     = format_indel_allele(format_mob_allele(Allele))
     )
 }
  

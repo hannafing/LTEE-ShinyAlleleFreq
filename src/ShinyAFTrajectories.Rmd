@@ -19,7 +19,7 @@ library(zoo)
 
 
 ```{r}
-df_m1 <- read_csv("ShinyAFTrajectories/output/data_m1.csv")
+df_m1 <- read_csv("ShinyAFTrajectories/output/data_m1.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_m1 <- df_m1 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -34,7 +34,7 @@ df_long_m1 <- df_m1 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_m1 <- df_m1 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -47,7 +47,7 @@ df_display_m1 <- df_m1 %>%
 
 
 ```{r}
-df_m2 <- read_csv("ShinyAFTrajectories/output/data_m2.csv")
+df_m2 <- read_csv("ShinyAFTrajectories/output/data_m2.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_m2 <- df_m2 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -62,7 +62,7 @@ df_long_m2 <- df_m2 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_m2 <- df_m2 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -75,7 +75,7 @@ df_display_m2 <- df_m2 %>%
 
 
 ```{r}
-df_m3 <- read_csv("ShinyAFTrajectories/output/data_m3.csv")
+df_m3 <- read_csv("ShinyAFTrajectories/output/data_m3.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_m3 <- df_m3 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -90,7 +90,7 @@ df_long_m3 <- df_m3 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_m3 <- df_m3 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -103,7 +103,7 @@ df_display_m3 <- df_m3 %>%
 
 
 ```{r}
-df_m4 <- read_csv("ShinyAFTrajectories/output/data_m4.csv")
+df_m4 <- read_csv("ShinyAFTrajectories/output/data_m4.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_m4 <- df_m4 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -118,7 +118,7 @@ df_long_m4 <- df_m4 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_m4 <- df_m4 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -131,7 +131,7 @@ df_display_m4 <- df_m4 %>%
 
 
 ```{r}
-df_m5 <- read_csv("ShinyAFTrajectories/output/data_m5.csv")
+df_m5 <- read_csv("ShinyAFTrajectories/output/data_m5.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_m5 <- df_m5 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -146,7 +146,7 @@ df_long_m5 <- df_m5 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_m5 <- df_m5 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -159,7 +159,7 @@ df_display_m5 <- df_m5 %>%
 
 
 ```{r}
-df_m6 <- read_csv("ShinyAFTrajectories/output/data_m6.csv")
+df_m6 <- read_csv("ShinyAFTrajectories/output/data_m6.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_m6 <- df_m6 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -174,7 +174,7 @@ df_long_m6 <- df_m6 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_m6 <- df_m6 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -187,7 +187,7 @@ df_display_m6 <- df_m6 %>%
 
 
 ```{r}
-df_p1 <- read_csv("ShinyAFTrajectories/output/data_p1.csv")
+df_p1 <- read_csv("ShinyAFTrajectories/output/data_p1.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_p1 <- df_p1 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -202,7 +202,7 @@ df_long_p1 <- df_p1 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_p1 <- df_p1 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -215,7 +215,7 @@ df_display_p1 <- df_p1 %>%
 
 
 ```{r}
-df_p2 <- read_csv("ShinyAFTrajectories/output/data_p2.csv")
+df_p2 <- read_csv("ShinyAFTrajectories/output/data_p2.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_p2 <- df_p2 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -230,7 +230,7 @@ df_long_p2 <- df_p2 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_p2 <- df_p2 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -243,7 +243,7 @@ df_display_p2 <- df_p2 %>%
 
 
 ```{r}
-df_p3 <- read_csv("ShinyAFTrajectories/output/data_p3.csv")
+df_p3 <- read_csv("ShinyAFTrajectories/output/data_p3.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_p3 <- df_p3 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -258,7 +258,7 @@ df_long_p3 <- df_p3 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_p3 <- df_p3 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -271,7 +271,7 @@ df_display_p3 <- df_p3 %>%
 
 
 ```{r}
-df_p4 <- read_csv("ShinyAFTrajectories/output/data_p4.csv")
+df_p4 <- read_csv("ShinyAFTrajectories/output/data_p4.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_p4 <- df_p4 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -286,7 +286,7 @@ df_long_p4 <- df_p4 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_p4 <- df_p4 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -299,7 +299,7 @@ df_display_p4 <- df_p4 %>%
 
 
 ```{r}
-df_p5 <- read_csv("ShinyAFTrajectories/output/data_p5.csv")
+df_p5 <- read_csv("ShinyAFTrajectories/output/data_p5.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_p5 <- df_p5 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -314,7 +314,7 @@ df_long_p5 <- df_p5 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_p5 <- df_p5 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -327,7 +327,7 @@ df_display_p5 <- df_p5 %>%
 
 
 ```{r}
-df_p6 <- read_csv("ShinyAFTrajectories/output/data_p6.csv")
+df_p6 <- read_csv("ShinyAFTrajectories/output/data_p6.csv", col_types = cols(CloneAllele = col_character()))
 
 df_long_p6 <- df_p6 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -342,7 +342,7 @@ df_long_p6 <- df_p6 %>%
   filter(!is.na(frequency), generation <= 60000)
 
 df_display_p6 <- df_p6 %>%
-  select(Gene, Allele, Annotation, Position, starts_with("AF:")) %>%
+  select(Gene, Allele, Annotation, Position, CloneAllele, starts_with("AF:")) %>%
   pivot_longer(
     cols = starts_with("AF:"),
     names_to = "Generation",
@@ -396,7 +396,9 @@ def_gene <- function(col_index) {
  
 # Allele:  "A→C" using U+2192
 # Splitting and rejoining on "->" also handles repeat-expansion notation such as "(T)7->8".
-def_allele <- function(col_index) {
+# source_index is the (hidden) AlleleSource column. Rows whose allele came from
+# a sequenced-clone breseq call get a † marker, explained under the table.
+def_allele <- function(col_index, source_index) {
   list(
     targets   = col_index,
     className = "breseq-allele",
@@ -404,12 +406,25 @@ def_allele <- function(col_index) {
       "function(data, type, row, meta) {",
       "  if (type !== 'display') return data;",
       "  if (data === null || data === undefined) return data;",
-      "  return String(data).split('->').join('\\u2192');",
+      "  var text = String(data).split('->').join('\\u2192');",
+      paste0("  if (row[", source_index, "] === 'clone') {"),
+      "    text += '<sup class=\"clone-mark\" title=\"breseq call from sequenced clones\">\\u2020</sup>';",
+      "  }",
+      "  return text;",
       "}"
     )
   )
 }
  
+# A column kept in the data for the renderers to read, but not shown or searched.
+def_hidden <- function(col_index) {
+  list(
+    targets    = col_index,
+    visible    = FALSE,
+    searchable = FALSE
+  )
+}
+
 # Annotation
 #
 # Handles two cases:
@@ -628,12 +643,20 @@ format_indel_allele <- function(allele) {
 # Rewrites both columns at once. Annotation is set from the *original*
 # Allele string, so this must run before Allele is overwritten -- which is
 # why both happen inside a single mutate() in this order.
+#
+# Where src/build_app_data.R found a breseq call from sequenced clones
+# (CloneAllele), that call replaces the merged indel list, and AlleleSource is
+# set to "clone" so the table can mark it.
 apply_breseq_mob <- function(df) {
   df %>%
     mutate(
-      Annotation = ifelse(is_mob_allele(Allele), "MOB", Annotation),
-      Allele     = format_indel_allele(format_mob_allele(Allele))
-    )
+      Annotation   = ifelse(is_mob_allele(Allele), "MOB", Annotation),
+      AlleleSource = ifelse(is.na(CloneAllele), "", "clone"),
+      Allele       = ifelse(is.na(CloneAllele),
+                            format_indel_allele(format_mob_allele(Allele)),
+                            CloneAllele)
+    ) %>%
+    select(-CloneAllele)
 }
  
  
@@ -665,6 +688,10 @@ ui <- page_fillable(
        \"N174T (AAC->ACC)\". Bare class labels are left unstyled. */
     .breseq-aa           { color: #0000CC; }
     .breseq-base-changed { color: #CC0000; text-decoration: underline; }
+
+    /* Marks alleles taken from sequenced-clone breseq calls; see .clone-note. */
+    .clone-mark { color: #0000CC; margin-left: 1px; cursor: help; }
+    .clone-note { font-size: 0.85em; color: #555; margin: 6px 0 0 0; }
 
     /* Only the checkbox cell in the filter row is centered, not the inputs. */
     table.dataTable thead tr:nth-child(2) td:first-child { text-align: center; }
@@ -893,7 +920,11 @@ server <- function(input, output, session) {
             tags$label(class = "form-check-label", `for` = paste0("wide_toggle_", pop$id), "Wide format")
           )
         ),
-        DTOutput(paste0("table_", pop$id))
+        DTOutput(paste0("table_", pop$id)),
+        p(class = "clone-note",
+          "† Indel confirmed by breseq in sequenced clones of this population. ",
+          "Other indels list every variant seen in the population reads, ",
+          "most of which are sequencing errors.")
       )
     })
   })
@@ -959,7 +990,7 @@ server <- function(input, output, session) {
           # matches the mutation_id values in pop$long.
           wide_df <- pop$display %>%
             mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
-            distinct(mutation_id, Gene, Allele, Annotation, Position) %>%
+            distinct(mutation_id, Gene, Allele, Annotation, Position, CloneAllele) %>%
             apply_breseq_mob()
 
           wide_df <- wide_df %>%
@@ -970,7 +1001,7 @@ server <- function(input, output, session) {
                 'data-mut="', mutation_id, '">'
               )
             ) %>%
-            select(Show, Gene, Allele, Annotation, Position)
+            select(Show, Gene, Allele, Annotation, Position, AlleleSource)
 
           header_container <- htmltools::withTags(table(
             class = "display",
@@ -980,18 +1011,20 @@ server <- function(input, output, session) {
                 th("Gene"),
                 th("Allele"),
                 th("Annotation"),
-                th("Position")
+                th("Position"),
+                th("AlleleSource")
               )
             )
           ))
 
-          # 0 Show | 1 Gene | 2 Allele | 3 Annotation | 4 Position
+          # 0 Show | 1 Gene | 2 Allele | 3 Annotation | 4 Position | 5 AlleleSource (hidden)
           wide_column_defs <- list(
             def_checkbox(0),
             def_gene(1),
-            def_allele(2),
+            def_allele(2, source_index = 5),
             def_annotation(3),
-            def_integer(4)
+            def_integer(4),
+            def_hidden(5)
           )
 
           datatable(
@@ -1012,16 +1045,18 @@ server <- function(input, output, session) {
 
         } else {
 
-          long_df <- apply_breseq_mob(pop$display)
+          long_df <- apply_breseq_mob(pop$display) %>%
+            select(Gene, Allele, Annotation, Position, Generation, Frequency, AlleleSource)
 
-          # 0 Gene | 1 Allele | 2 Annotation | 3 Position | 4 Generation | 5 Frequency
+          # 0 Gene | 1 Allele | 2 Annotation | 3 Position | 4 Generation | 5 Frequency | 6 AlleleSource (hidden)
           long_column_defs <- list(
             def_gene(0),
-            def_allele(1),
+            def_allele(1, source_index = 6),
             def_annotation(2),
             def_integer(3),
             def_integer(4),
-            def_frequency(5)
+            def_frequency(5),
+            def_hidden(6)
           )
 
           datatable(

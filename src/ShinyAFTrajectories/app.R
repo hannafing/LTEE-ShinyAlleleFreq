@@ -7,19 +7,10 @@ library(bslib)
 library(DT)
 library(zoo)
 
+# The CSVs in output/ are built by src/build_app_data.R, which blanks out
+# low-depth and post-deletion timepoints the same way Good et al. 2017 do.
 
 df_m1 <- read_csv("output/data_m1.csv")
-
-dp_cols_m1  <- grep("^DP:", names(df_m1), value = TRUE)
-af_cols_m1  <- gsub("^DP:", "AF:", dp_cols_m1)
-
-for (i in seq_along(dp_cols_m1)) {
-  dp_col <- dp_cols_m1[i]
-  af_col <- af_cols_m1[i]
-  if (af_col %in% names(df_m1)) {
-    df_m1[[af_col]][df_m1[[dp_col]] < 5] <- NA
-  }
-}
 
 df_long_m1 <- df_m1 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -49,17 +40,6 @@ df_display_m1 <- df_m1 %>%
 
 df_m2 <- read_csv("output/data_m2.csv")
 
-dp_cols_m2  <- grep("^DP:", names(df_m2), value = TRUE)
-af_cols_m2  <- gsub("^DP:", "AF:", dp_cols_m2)
-
-for (i in seq_along(dp_cols_m2)) {
-  dp_col <- dp_cols_m2[i]
-  af_col <- af_cols_m2[i]
-  if (af_col %in% names(df_m2)) {
-    df_m2[[af_col]][df_m2[[dp_col]] < 5] <- NA
-  }
-}
-
 df_long_m2 <- df_m2 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
   select(mutation_id, Gene, starts_with("AF:")) %>%
@@ -88,17 +68,6 @@ df_display_m2 <- df_m2 %>%
 
 df_m3 <- read_csv("output/data_m3.csv")
 
-dp_cols_m3  <- grep("^DP:", names(df_m3), value = TRUE)
-af_cols_m3  <- gsub("^DP:", "AF:", dp_cols_m3)
-
-for (i in seq_along(dp_cols_m3)) {
-  dp_col <- dp_cols_m3[i]
-  af_col <- af_cols_m3[i]
-  if (af_col %in% names(df_m3)) {
-    df_m3[[af_col]][df_m3[[dp_col]] < 5] <- NA
-  }
-}
-
 df_long_m3 <- df_m3 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
   select(mutation_id, Gene, starts_with("AF:")) %>%
@@ -126,17 +95,6 @@ df_display_m3 <- df_m3 %>%
 
 
 df_m4 <- read_csv("output/data_m4.csv")
-
-dp_cols_m4  <- grep("^DP:", names(df_m4), value = TRUE)
-af_cols_m4  <- gsub("^DP:", "AF:", dp_cols_m4)
-
-for (i in seq_along(dp_cols_m4)) {
-  dp_col <- dp_cols_m4[i]
-  af_col <- af_cols_m4[i]
-  if (af_col %in% names(df_m4)) {
-    df_m4[[af_col]][df_m4[[dp_col]] < 5] <- NA
-  }
-}
 
 df_long_m4 <- df_m4 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -167,17 +125,6 @@ df_display_m4 <- df_m4 %>%
 
 df_m5 <- read_csv("output/data_m5.csv")
 
-dp_cols_m5  <- grep("^DP:", names(df_m5), value = TRUE)
-af_cols_m5  <- gsub("^DP:", "AF:", dp_cols_m5)
-
-for (i in seq_along(dp_cols_m5)) {
-  dp_col <- dp_cols_m5[i]
-  af_col <- af_cols_m5[i]
-  if (af_col %in% names(df_m5)) {
-    df_m5[[af_col]][df_m5[[dp_col]] < 5] <- NA
-  }
-}
-
 df_long_m5 <- df_m5 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
   select(mutation_id, Gene, starts_with("AF:")) %>%
@@ -206,17 +153,6 @@ df_display_m5 <- df_m5 %>%
 
 
 df_m6 <- read_csv("output/data_m6.csv")
-
-dp_cols_m6  <- grep("^DP:", names(df_m6), value = TRUE)
-af_cols_m6  <- gsub("^DP:", "AF:", dp_cols_m6)
-
-for (i in seq_along(dp_cols_m6)) {
-  dp_col <- dp_cols_m6[i]
-  af_col <- af_cols_m6[i]
-  if (af_col %in% names(df_m6)) {
-    df_m6[[af_col]][df_m6[[dp_col]] < 5] <- NA
-  }
-}
 
 df_long_m6 <- df_m6 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -247,17 +183,6 @@ df_display_m6 <- df_m6 %>%
 
 df_p1 <- read_csv("output/data_p1.csv")
 
-dp_cols_p1  <- grep("^DP:", names(df_p1), value = TRUE)
-af_cols_p1  <- gsub("^DP:", "AF:", dp_cols_p1)
-
-for (i in seq_along(dp_cols_p1)) {
-  dp_col <- dp_cols_p1[i]
-  af_col <- af_cols_p1[i]
-  if (af_col %in% names(df_p1)) {
-    df_p1[[af_col]][df_p1[[dp_col]] < 5] <- NA
-  }
-}
-
 df_long_p1 <- df_p1 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
   select(mutation_id, Gene, starts_with("AF:")) %>%
@@ -286,17 +211,6 @@ df_display_p1 <- df_p1 %>%
 
 
 df_p2 <- read_csv("output/data_p2.csv")
-
-dp_cols_p2  <- grep("^DP:", names(df_p2), value = TRUE)
-af_cols_p2  <- gsub("^DP:", "AF:", dp_cols_p2)
-
-for (i in seq_along(dp_cols_p2)) {
-  dp_col <- dp_cols_p2[i]
-  af_col <- af_cols_p2[i]
-  if (af_col %in% names(df_p2)) {
-    df_p2[[af_col]][df_p2[[dp_col]] < 5] <- NA
-  }
-}
 
 df_long_p2 <- df_p2 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -327,17 +241,6 @@ df_display_p2 <- df_p2 %>%
 
 df_p3 <- read_csv("output/data_p3.csv")
 
-dp_cols_p3  <- grep("^DP:", names(df_p3), value = TRUE)
-af_cols_p3  <- gsub("^DP:", "AF:", dp_cols_p3)
-
-for (i in seq_along(dp_cols_p3)) {
-  dp_col <- dp_cols_p3[i]
-  af_col <- af_cols_p3[i]
-  if (af_col %in% names(df_p3)) {
-    df_p3[[af_col]][df_p3[[dp_col]] < 5] <- NA
-  }
-}
-
 df_long_p3 <- df_p3 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
   select(mutation_id, Gene, starts_with("AF:")) %>%
@@ -366,17 +269,6 @@ df_display_p3 <- df_p3 %>%
 
 
 df_p4 <- read_csv("output/data_p4.csv")
-
-dp_cols_p4  <- grep("^DP:", names(df_p4), value = TRUE)
-af_cols_p4  <- gsub("^DP:", "AF:", dp_cols_p4)
-
-for (i in seq_along(dp_cols_p1)) {
-  dp_col <- dp_cols_p4[i]
-  af_col <- af_cols_p4[i]
-  if (af_col %in% names(df_p4)) {
-    df_p4[[af_col]][df_p4[[dp_col]] < 5] <- NA
-  }
-}
 
 df_long_p4 <- df_p4 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
@@ -407,17 +299,6 @@ df_display_p4 <- df_p4 %>%
 
 df_p5 <- read_csv("output/data_p5.csv")
 
-dp_cols_p5  <- grep("^DP:", names(df_p5), value = TRUE)
-af_cols_p5  <- gsub("^DP:", "AF:", dp_cols_p5)
-
-for (i in seq_along(dp_cols_p1)) {
-  dp_col <- dp_cols_p5[i]
-  af_col <- af_cols_p5[i]
-  if (af_col %in% names(df_p5)) {
-    df_p5[[af_col]][df_p5[[dp_col]] < 5] <- NA
-  }
-}
-
 df_long_p5 <- df_p5 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
   select(mutation_id, Gene, starts_with("AF:")) %>%
@@ -446,17 +327,6 @@ df_display_p5 <- df_p5 %>%
 
 
 df_p6 <- read_csv("output/data_p6.csv")
-
-dp_cols_p6  <- grep("^DP:", names(df_p6), value = TRUE)
-af_cols_p6  <- gsub("^DP:", "AF:", dp_cols_p6)
-
-for (i in seq_along(dp_cols_p6)) {
-  dp_col <- dp_cols_p6[i]
-  af_col <- af_cols_p6[i]
-  if (af_col %in% names(df_p6)) {
-    df_p6[[af_col]][df_p6[[dp_col]] < 5] <- NA
-  }
-}
 
 df_long_p6 <- df_p6 %>%
   mutate(mutation_id = paste(Gene, Position, Allele, sep = "_")) %>%
